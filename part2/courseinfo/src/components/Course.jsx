@@ -5,9 +5,13 @@ import Suma from './Suma';
 const Course = ( {course} ) => {
     return (
         <div>
-            <Header name={course.name}/> 
-            <Content parts={course.parts} />
-            <Suma parts={course.parts}/>
+            {course.map((singleCourse) => (
+                <div key={singleCourse.id}>
+                    <Header name={singleCourse.name}/> 
+                    <Content parts={singleCourse.parts} />
+                    <Suma parts={singleCourse.parts}/>
+                </div>
+            ))}
         </div>
     )
 }
