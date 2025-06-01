@@ -2,15 +2,22 @@ import { useState } from 'react'
 
 const Statistics = ({good, neutral, bad, average, positive}) => {
 
+  if (good > 0 || neutral > 0 || bad > 0) {
+    return (
+      <div>
+        <h2>Statics</h2>
+        <p>good: {good}</p>
+        <p>neutral: {neutral}</p>
+        <p>bad: {bad}</p>
+        <p>all: {good + neutral + bad}</p>
+        <p>average: {average.toFixed(2)}</p>
+        <p>positive: {positive.toFixed(2)}%</p>
+      </div>
+    )
+  }
   return (
     <div>
-      <h2>Statics</h2>
-      <p>good: {good}</p>
-      <p>neutral: {neutral}</p>
-      <p>bad: {bad}</p>
-      <p>all: {good + neutral + bad}</p>
-      <p>average: {average.toFixed(2)}</p>
-      <p>positive: {positive.toFixed(2)}%</p>
+      <p>No feedback given</p>
     </div>
   )
 }
