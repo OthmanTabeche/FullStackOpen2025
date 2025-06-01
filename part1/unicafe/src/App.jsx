@@ -17,6 +17,13 @@ const App = () => {
   const handleClickBad = () => {
     setBad(bad + 1)
   }
+
+  // Calculate the average score
+  const total = good + neutral + bad
+  const average = total === 0 ? 0 : (good - bad) / total
+
+  // Calculate the positive score
+  const positive = total === 0 ? 0 : (good / total) * 100
   
   return (
     <div>
@@ -28,6 +35,9 @@ const App = () => {
       <p>good: {good}</p>
       <p>neutral: {neutral}</p>
       <p>bad: {bad}</p>
+      <p>all: {good + neutral + bad}</p>
+      <p>average: {average.toFixed(2)}</p>
+      <p>positive: {positive.toFixed(2)}</p>
     </div>
   )
 }
