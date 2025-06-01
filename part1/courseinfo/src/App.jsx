@@ -14,20 +14,21 @@ const Part = ( {part, exercises} ) => {
   )
 }
 
-const Content = ( {part1, exercises1, part2, exercises2, part3, exercises3} ) => {
+const Content = ( {parts} ) => {
   return (
     <div>
-      <Part part={part1} exercises={exercises1} />
-      <Part part={part2} exercises={exercises2} />
-      <Part part={part3} exercises={exercises3} />
+      <Part part={parts[0].name} exercises={parts[0].exercises} />
+      <Part part={parts[1].name} exercises={parts[1].exercises} />
+      <Part part={parts[2].name} exercises={parts[2].exercises} />
+      
     </div>
   )
 }
 
-const Total = ( {exercises} ) => {
+const Total = ( {parts} ) => {
   return (
     <div>
-      {exercises}
+      <Part exercises={parts[0].exercises + parts[1].exercises + parts[2].exercises} />
     </div>
   )
 }
@@ -52,14 +53,10 @@ const App = () => {
   return (
     <div>
       <Header course={course} />
-      <Content
-        part1={parts[0].name} exercises1={parts[0].exercises}
-        part2={parts[1].name} exercises2={parts[1].exercises}
-        part3={parts[2].name} exercises3={parts[2].exercises}
-      />
-      <Total exercises={parts[0].exercises + parts[1].exercises + parts[2].exercises} />
+      <Content parts={parts} />
+      <Total parts={parts} />
     </div>
   )
 }
 
-export default App
+export default App;
