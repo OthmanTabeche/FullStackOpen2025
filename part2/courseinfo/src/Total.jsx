@@ -1,9 +1,10 @@
 function Total ({course}) {
-    const total = course.parts.reduce((acc, obj) => acc + obj.exercises, 0);
-    
+
+    const total = course.parts.reduce((acc, obj) => acc + obj.exercises, 0)
+
     return (
         <div>
-            {total}
+            <strong>Total of {total} exercises </strong>
         </div>
     )
 }

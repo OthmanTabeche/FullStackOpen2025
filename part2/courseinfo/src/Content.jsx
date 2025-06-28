@@ -1,11 +1,23 @@
-import Part from "./Part"
+import Header from "./Header"
+import Total from "./Total"
 
-function Content ( {course} ) {
+function Content ( {courses} ) {
+
     return (
         <div>
-            <Part part={course.parts[0].name} exercises={course.parts[0].exercises} />
-            <Part part={course.parts[1].name} exercises={course.parts[1].exercises} />
-            <Part part={course.parts[2].name} exercises={course.parts[2].exercises} />
+            {courses.map((course) =>
+                <div key={course.id}>
+                    <Header course={course} />
+                    <ul>
+                       {course.parts.map((part) => 
+                        <li key={part.id}>
+                            {part.name} {part.exercises}
+                        </li>
+                    )} 
+                    </ul>
+                    <Total course={course} />
+                </div>
+            )}
         </div>
     )
 }

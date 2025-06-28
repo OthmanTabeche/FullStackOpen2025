@@ -1,13 +1,9 @@
-import Header from "./Header";
 import Content from "./Content";
-import Total from "./Total";
 
-function Course ({course}) {
+function Course ( {courses} ) {
     return (
         <div>
-            <Header course={course} />
-            <Content course={course} />
-            <Total course={course} />
+            <Content courses={courses} />
         </div>
     )
 }

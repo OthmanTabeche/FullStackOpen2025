@@ -2,7 +2,7 @@
 function Header ( {course} ) {
     return (
         <div>
-            <h1>{course.name}</h1>
+            <h3>{course.name}</h3>
         </div>
     )
 }
