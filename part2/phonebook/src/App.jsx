@@ -10,6 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [filter, setFilter] = useState('')
+  // const [delatePerson, setDelatePerson] = useState("")
 
   useEffect(() => {
     personsServices
@@ -53,9 +54,21 @@ const App = () => {
         setNewName("")
         setNewPhone("")
       })
+
+    personsServices
+      .deletePerson()  
   }
 
   const filtredPersons = persons.filter((person) => person.name.toLowerCase().includes(filter))
+
+  const handleDelete = (id) => {
+    //const person = persons.find(p => p.id === id)
+    personsServices
+      .deletePerson(id)
+      .then(() => {
+        setPersons(persons.filter(person => person.id !== id))
+      })
+  }
 
   return (
     <div>
@@ -71,7 +84,7 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons filtredPersons={filtredPersons} />
+      <Persons filtredPersons={filtredPersons} handleDelete={handleDelete} />
     </div>
   )
 }
