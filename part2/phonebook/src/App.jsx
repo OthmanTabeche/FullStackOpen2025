@@ -4,6 +4,8 @@ import Persons from './Persons'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
 
+const baseUrl = 'http://localhost:3001/persons'
+
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
@@ -32,10 +34,10 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    const nameObject = {
+    const personObject = {
+      id: persons.length + 1,
       name: newName,
-      phone: newPhone,
-      id: persons.length + 1
+      phone: newPhone
     }
 
     const exist = persons.some((person) => person.name == newName);
@@ -45,9 +47,14 @@ const App = () => {
       return
     }
 
-    setPersons(persons.concat(nameObject))
-    setNewName("")
-    setNewPhone("")
+    axios
+      .post(baseUrl, personObject)
+      .then(response => {
+        setPersons(persons.concat(response.data))
+        setNewName("")
+        setNewPhone("")
+      })
+
   }
 
   const filtredPersons = persons.filter((person) => person.name.toLowerCase().includes(filter))
