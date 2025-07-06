@@ -1,10 +1,9 @@
+import { useState, useEffect } from 'react'
 import Filter from './Filter'
 import PersonForm from './PersonForm'
 import Persons from './Persons'
 import axios from 'axios'
-import { useState, useEffect } from 'react'
-
-const baseUrl = 'http://localhost:3001/persons'
+import personsServices from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -13,8 +12,8 @@ const App = () => {
   const [filter, setFilter] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
+    personsServices
+      .getAll()
       .then(response => {
         setPersons(response.data)
       })
@@ -47,14 +46,13 @@ const App = () => {
       return
     }
 
-    axios
-      .post(baseUrl, personObject)
+    personsServices
+      .create(personObject)
       .then(response => {
         setPersons(persons.concat(response.data))
         setNewName("")
         setNewPhone("")
       })
-
   }
 
   const filtredPersons = persons.filter((person) => person.name.toLowerCase().includes(filter))
