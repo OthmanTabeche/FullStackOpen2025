@@ -44,6 +44,13 @@ app.get('/api/persons/:id', (request, response) => {
   response.send(person)
 })
 
+app.delete('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id);
+  persons = persons.filter(person => person.id !== id) // crea un nuevo array pero sin la persona con el id
+
+  response.status(202).end()
+})
+
 PORT = 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
