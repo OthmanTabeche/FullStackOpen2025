@@ -1,5 +1,10 @@
 const express = require('express')
+const cors = require('cors')
+
+
 const app = express()
+app.use(cors())
+
 app.use(express.json())
 
 // path: http://localhost:3001/api/persons
@@ -55,14 +60,14 @@ app.delete('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
-  if (!body.name || !body.number) {
-    return response.status(404).json({error: 'name must be unique'})
+  if (!body.name || !body.phone) {
+    return response.status(400).json({error: 'name must be unique'})
   }
 
   const person = {
     id: Math.floor(Math.random() * 100000000),
     name: body.name,
-    number: body.number
+    phone: body.phone
   }
 
   persons = persons.concat(person)
