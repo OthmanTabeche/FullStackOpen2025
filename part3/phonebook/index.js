@@ -3,7 +3,7 @@ const app = express()
 
 // path: http://localhost:3001/api/persons
 
-let phonebook = [
+let persons = [
     { 
         "id": 1,
         "name": "Arto Hellas", 
@@ -27,13 +27,21 @@ let phonebook = [
 ]
 
 app.get('/api/persons', (request, response) => {
-    response.json(phonebook)
+    response.json(persons)
 })
 
 app.get('/info', (request, response) => {
-  let phonebookInfo = phonebook.length;
-  let d = new Date();
-  response.send(`<p>Phonebook has info for ${phonebookInfo} </p> <p>${d}</p>`)
+  const personsInfo = persons.length;
+  const d = new Date();
+  response.send(`<p>persons has info for ${personsInfo} </p> <p>${d}</p>`)
+})
+
+app.get('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id);
+  //console.log(id)
+  //console.log(typeof id)
+  const person = persons.find(person => person.id === id)
+  response.send(person)
 })
 
 PORT = 3001
