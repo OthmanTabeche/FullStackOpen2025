@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+app.use(express.json())
 
 // path: http://localhost:3001/api/persons
 
@@ -49,6 +50,19 @@ app.delete('/api/persons/:id', (request, response) => {
   persons = persons.filter(person => person.id !== id) // crea un nuevo array pero sin la persona con el id
 
   response.status(202).end()
+})
+
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+
+  const person = {
+    id: Math.floor(Math.random() * 100000000),
+    name: body.name,
+    number: body.number
+  }
+
+  persons = persons.concat(person)
+  response.status(201).json(person) // paso el objeto person a JSON
 })
 
 PORT = 3001
