@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import Filter from './Filter'
 import PersonForm from './PersonForm'
 import Persons from './Persons'
-import axios from 'axios'
 import personsServices from './services/persons'
 
 const App = () => {
@@ -54,15 +53,11 @@ const App = () => {
         setNewName("")
         setNewPhone("")
       })
-
-    personsServices
-      .deletePerson()  
   }
 
   const filtredPersons = persons.filter((person) => person.name.toLowerCase().includes(filter))
 
   const handleDelete = (id) => {
-    //const person = persons.find(p => p.id === id)
     personsServices
       .deletePerson(id)
       .then(() => {
