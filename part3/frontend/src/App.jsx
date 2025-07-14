@@ -15,6 +15,7 @@ const App = () => {
     personsServices
       .getAll()
       .then(response => {
+        console.log(response.data)
         setPersons(response.data)
       })
   }, [])
@@ -36,7 +37,7 @@ const App = () => {
     const personObject = {
       id: persons.length + 1,
       name: newName,
-      phone: newPhone
+      number: newPhone
     }
 
     const exist = persons.some((person) => person.name == newName);
@@ -55,7 +56,9 @@ const App = () => {
       })
   }
 
-  const filtredPersons = persons.filter((person) => person.name.toLowerCase().includes(filter))
+const filtredPersons = persons.filter((person) =>
+  person.name.toLowerCase().includes(filter.toLowerCase())
+)
 
   const handleDelete = (id) => {
     personsServices
