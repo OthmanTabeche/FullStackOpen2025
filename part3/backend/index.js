@@ -1,7 +1,6 @@
 const express = require('express')
 const app = express()
 
-
 let phonebook = [
   { 
       "id": 1,
@@ -25,6 +24,10 @@ let phonebook = [
     }
 ]
 
+const getRandomId = () => {
+  Math.floor(Math.random() * 99494559505986)
+}
+
 app.get('/api/persons', (request, response) => {
   response.json(phonebook)
 })
@@ -34,6 +37,13 @@ app.get('/info', (request, response) => {
   let time = Date()
   let content = `<p>Phonebook has info for ${phonebookLength} people</p><p>${time}</p>`
   response.send(content)
+})
+
+app.get('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  const person = phonebook.find(person => person.id === id)
+
+  response.json(person)
 })
 
 PORT = 3001
