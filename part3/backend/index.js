@@ -25,7 +25,7 @@ let phonebook = [
 ]
 
 const getRandomId = () => {
-  Math.floor(Math.random() * 99494559505986)
+  return Math.floor(Math.random() * 99494559505986)
 }
 
 app.get('/api/persons', (request, response) => {
@@ -51,6 +51,25 @@ app.delete('/api/persons/:id', (request, response) => {
   const person = phonebook.filter(person => person.id !== id)
 
   response.status(202).end()
+})
+
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+  console.log(body)
+
+  if (!body.name || !body.number) {
+    return response.status(404).json({'messege': 'error'})
+  }
+
+  const newPerson = {
+    "id" : getRandomId(),
+    "name" : body.name,
+    "number": body.number
+  }
+
+  phonebook = phonebook.concat(newPerson)
+
+  response.status(201).json(newPerson)
 })
 
 PORT = 3001
