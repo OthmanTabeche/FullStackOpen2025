@@ -29,7 +29,12 @@ app.get('/api/persons', (request, response) => {
   response.json(phonebook)
 })
 
-
+app.get('/info', (request, response) => {
+  let phonebookLength = phonebook.length
+  let time = Date()
+  let content = `<p>Phonebook has info for ${phonebookLength} people</p><p>${time}</p>`
+  response.send(content)
+})
 
 PORT = 3001
 app.listen(PORT, () => {
