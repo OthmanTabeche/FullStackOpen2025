@@ -58,7 +58,13 @@ app.post('/api/persons', (request, response) => {
   console.log(body)
 
   if (!body.name || !body.number) {
-    return response.status(404).json({'messege': 'error'})
+    return response.status(404).json({ error: 'ERROR' })
+  }
+
+  let duplicateName = phonebook.find(person => person.name === body.name)
+
+  if(duplicateName) {
+    return response.status(404).json({ error: 'name must be unique' })
   }
 
   const newPerson = {
