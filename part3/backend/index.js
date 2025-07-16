@@ -1,64 +1,64 @@
+const mongoose = require('mongoose')
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
+const Person = require('./models/person')
+require('dotenv').config()
 
 app.use(express.json()) 
 app.use(morgan('tiny'))
 const cors = require('cors')
-app.use(cors())  
+app.use(cors())
 
 app.use(express.static('dist'))
 
-let phonebook = [
-  { 
-      "id": 1,
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": 2,
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": 3,
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": 4,
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
+mongoose.set('strictQuery', false)
+mongoose.connect(process.env.MONGODB_URI)
 
-const getRandomId = () => {
-  return Math.floor(Math.random() * 99494559505986)
-}
 
 app.get('/api/persons', (request, response) => {
-  response.json(phonebook)
+  Person.find({})
+    .then(persons => {
+      response.json(persons)
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(500).end()
+    })
 })
 
 app.get('/info', (request, response) => {
-  let phonebookLength = phonebook.length
-  let time = Date()
-  let content = `<p>Phonebook has info for ${phonebookLength} people</p><p>${time}</p>`
-  response.send(content)
+  Person.countDocuments({})
+    .then(count => {
+      let time = Date()
+      let content = `<p>Phonebook has info for ${count} people</p><p>${time}</p>`
+      response.send(content)
+    .catch(error => {
+      console.log(error)
+      response.status(500).end()
+    })
+  })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = phonebook.find(person => person.id === id)
-
-  response.json(person)
+  Person.findById(request.params.id).then(person => {
+    if (person) {
+      response.json(person)
+    } else {
+      response.status(404).end()
+    }
+  })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = phonebook.filter(person => person.id !== id)
-
-  response.status(202).end()
+  Person.findById(request.params.id)
+    .then(() => {
+      response.status(202).end()
+    .catch(error => {
+      console.log(error)
+      response.status(500).end()
+    })
+  })
 })
 
 app.post('/api/persons', (request, response) => {
@@ -69,21 +69,14 @@ app.post('/api/persons', (request, response) => {
     return response.status(404).json({ error: 'ERROR' })
   }
 
-  let duplicateName = phonebook.find(person => person.name === body.name)
+  const person = new Person ({
+    name : body.name,
+    number: body.number,
+  })
 
-  if(duplicateName) {
-    return response.status(404).json({ error: 'name must be unique' })
-  }
-
-  const newPerson = {
-    "id" : getRandomId(),
-    "name" : body.name,
-    "number": body.number
-  }
-
-  phonebook = phonebook.concat(newPerson)
-
-  response.status(201).json(newPerson)
+  person.save().then(personSaved => {
+    response.status(202).json(personSaved)
+  })
 })
 
 PORT = 3001

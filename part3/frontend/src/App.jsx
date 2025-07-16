@@ -35,7 +35,6 @@ const App = () => {
   const handleSubmit = (event) => {
     event.preventDefault()
     const personObject = {
-      id: persons.length + 1,
       name: newName,
       number: newPhone
     }

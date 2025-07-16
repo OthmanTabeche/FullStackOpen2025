@@ -20,10 +20,10 @@ mongoose.connect(url)
 
 const personSchema = new mongoose.Schema({
     name: String,
-    number: Number
+    number: String
 })
 
-const Person = mongoose.model('Persone', personSchema)
+const Person = mongoose.model('Person', personSchema)
 
 if (process.argv.length > 4) {
     const person = new Person({
