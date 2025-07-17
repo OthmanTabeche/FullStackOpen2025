@@ -1,6 +1,5 @@
 const express = require('express')
 const app = express()
-const cors = require('cors')
 const mongoose = require('mongoose')
 const {PORT, MONGODB_URI} = require('./utils/config')
 const Blog = require('./models/blog')
@@ -14,8 +13,6 @@ mongoose.connect(MONGODB_URI)
     console.log(`error connecting to mongoDB: ${error.message}`)
   })
 
-app.use(cors())
-app.use(express.json())
 
 app.get('/api/blogs', (request, response) => {
   Blog
