@@ -3,29 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "license": "MIT",
-  "author": "Othman Tabeche",
-  "type": "commonjs",
+  "author": "Othman",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "lint": "eslint .",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cd ../frontend && npm run build && cp -r dist/* ../backend/dist/"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.0",
-    "express": "^5.1.0",
-    "mongodb": "^6.17.0",
-    "mongoose": "^8.16.3",
-    "morgan": "^1.10.0"
+    "express": "^5.1.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.31.0",
-    "@stylistic/eslint-plugin-js": "^4.4.1",
-    "eslint": "^9.31.0",
-    "globals": "^16.3.0",
-    "nodemon": "^3.0.3"
+    "nodemon": "^3.1.10"
   }
 }

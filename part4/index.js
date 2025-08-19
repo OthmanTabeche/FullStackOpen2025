@@ -1,37 +1,7 @@
-const express = require('express')
-const app = express()
-const mongoose = require('mongoose')
-const {PORT, MONGODB_URI} = require('./utils/config')
-const Blog = require('./models/blog')
+const app = require('./app') // la aplicación Express
+const config = require('./utils/config')
+const logger = require('./utils/logger')
 
-mongoose.set('strictQuery', false)
-mongoose.connect(MONGODB_URI)
-  .then(() => {
-    console.log('connnected to mondoDB')
-  })
-  .catch((error) => {
-    console.log(`error connecting to mongoDB: ${error.message}`)
-  })
-
-
-app.get('/api/blogs', (request, response) => {
-  Blog
-    .find({})
-    .then(blogs => {
-      response.json(blogs)
-    })
-})
-
-app.post('/api/blogs', (request, response) => {
-  const blog = new Blog(request.body)
-
-  blog
-    .save()
-    .then(result => {
-      response.status(201).json(result)
-    })
-})
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+app.listen(config.PORT, () => {
+  logger.info(`Server running on port ${config.PORT}`)
 })

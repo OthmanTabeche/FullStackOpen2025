@@ -1,80 +1,93 @@
-require('dotenv').config()
-const mongoose = require('mongoose')
-const express = require('express')
+import express, { request, response } from "express";
 const app = express()
-const morgan = require('morgan')
-const Person = require('./models/person')
 
-app.use(express.json()) 
-app.use(morgan('tiny'))
-const cors = require('cors')
-app.use(cors())
+app.use(express.json())
 
-app.use(express.static('dist'))
 
-mongoose.set('strictQuery', false)
-mongoose.connect(process.env.MONGODB_URI)
+let phonebook = [
+    { 
+      "id": 1,
+      "name": "Arto Hellas", 
+      "number": "040-123456"
+    },
+    { 
+      "id": 2,
+      "name": "Ada Lovelace", 
+      "number": "39-44-5323523"
+    },
+    { 
+      "id": 3,
+      "name": "Dan Abramov", 
+      "number": "12-43-234345"
+    },
+    { 
+      "id": 4,
+      "name": "Mary Poppendieck", 
+      "number": "39-23-6423122"
+    }
+]
 
-app.get('/api/persons', (request, response, next) => {
-  Person.find({})
-    .then(persons => {
-      response.json(persons)
-    })
-    .catch(error => next(error))
+const getNewId = () => {
+    const maxId = phonebook.length > 0 ? Math.max(...phonebook.map (n => n.id)) : 0
+    return maxId + 1
+}
+
+app.get('/api/persons', (_req, res) => {
+    res.send(phonebook)
 })
 
-app.get('/info', (request, response, next) => {
-  Person.countDocuments({})
-    .then(count => {
-      let time = Date()
-      let content = `<p>Phonebook has info for ${count} people</p><p>${time}</p>`
-      response.send(content)
-    })
-    .catch(error => next(error))
+app.get('/info', (_req, res) => {
+    const persons = phonebook.length    
+    const date = Date()
+    res.send(`<p>Phonebook has info for ${persons} people</p> <p>${date}</p>`)
 })
 
-app.get('/api/persons/:id', (request, response, next) => {
-  Person.findById(request.params.id)
-    .then(person => {
-      if (person) {
-        response.json(person)
-      } else {
-        response.status(404).end()
-      }
-    })
-    .catch(error => next(error))
+app.get('/api/persons/:id', (_req, res) => {
+    const id = Number(_req.params.id)
+    const person = phonebook.find(person => person.id === id)
+
+    if (person) {
+        res.json(person)
+    } else {
+        res.status(404).json({"messege": "Person not found, try another id"})
+    }
 })
 
-app.delete('/api/persons/:id', (request, response, next) => {
-  Person.findByIdAndDelete(request.params.id)
-    .then(() => {
-      response.status(202).end()
-    })
-    .catch(error => next(error))
+app.delete('/api/persons/:id', (_req, res) => {
+    const id = Number(_req.params.id)
+    phonebook = phonebook.filter(person => person.id !== id)
+    
+    res.status(204).end()
 })
 
-app.post('/api/persons', (request, response) => {
-  const body = request.body
-  console.log(body)
+app.post('/api/persons', (_req, res) => {
+    const body = _req.body
+    const name = body.name
+    const number = body.number
 
-  if (!body.name || !body.number) {
-    return response.status(404).json({ error: 'ERROR' })
-  }
+    if (!name || !number) {
+        return res.status(400).json({ error: 'check the name or the number' })
+    }
 
-  const person = new Person ({
-    name : body.name,
-    number: body.number,
-  })
+    const existsName = phonebook.find(person => person.name === String(name))
 
-  person.save().then(personSaved => {
-    response.status(202).json(personSaved)
-  })
+    if (existsName) {
+        return res.status(400).json({ error: 'name must be unique' })
+    }
+
+    const person = {
+        id: getNewId(),
+        name: name,
+        number: number
+    }
+
+
+    phonebook = phonebook.concat(person)
+    res.status(201).json(person)
+
 })
 
-const errorHandler = require('./middleware/errorHandler')
-app.use(errorHandler)
-
-PORT = 3001
-app.listen(PORT, () => {
-  console.log('The APP is running in the port 3001')
-})
+const PORT = 3001
+app.listen(PORT, () => (
+    console.log(`Server running on port ${PORT}`)
+))  
