@@ -1,98 +1,63 @@
-import express, { json, request, response } from "express";
-import morgan, { token } from "morgan";
+import express from "express";
+import cors from "cors";
+import morgan from "morgan";
+import Person from "./models/person.js"
+import person from "./models/person.js";
 
 const app = express()
 
-
 app.use(express.json())
+app.use(cors())
+app.use(express.static('dist'))
 
-morgan.token('body', (_req) => {
-    return JSON.stringify(_req.body)
+morgan.token('body', (req) => {
+    return JSON.stringify(req.body)
 })
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms: body'))
-
-
-let phonebook = [
-    { 
-      "id": 1,
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": 2,
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": 3,
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": 4,
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
 
 const getNewId = () => {
     const maxId = phonebook.length > 0 ? Math.max(...phonebook.map (n => n.id)) : 0
     return maxId + 1
 }
 
-app.get('/api/persons', (_req, res) => {
-    res.send(phonebook)
+app.get('/api/persons', (req, res) => {
+    Person.find({}).then(persons => {
+        res.json(persons)
+    })
 })
 
-app.get('/info', (_req, res) => {
-    const persons = phonebook.length    
-    const date = Date()
-    res.send(`<p>Phonebook has info for ${persons} people</p> <p>${date}</p>`)
+app.get('/api/persons/:id', (req, res) => {
+    Person
+        .findById(req.params.id)
+        .then(person => {
+            res.json(person)
+        })
 })
 
-app.get('/api/persons/:id', (_req, res) => {
-    const id = Number(_req.params.id)
-    const person = phonebook.find(person => person.id === id)
 
-    if (person) {
-        res.json(person)
-    } else {
-        res.status(404).json({"messege": "Person not found, try another id"})
-    }
-})
-
-app.delete('/api/persons/:id', (_req, res) => {
-    const id = Number(_req.params.id)
+app.delete('/api/persons/:id', (req, res) => {
+    const id = Number(req.params.id)
     phonebook = phonebook.filter(person => person.id !== id)
     
     res.status(204).end()
 })
 
-app.post('/api/persons', (_req, res) => {
-    const body = _req.body
-    const name = body.name
-    const number = body.number
+app.post('/api/persons', (req, res) => {
+    const { name, number } = req.body
 
     if (!name || !number) {
         return res.status(400).json({ error: 'check the name or the number' })
     }
 
-    const existsName = phonebook.find(person => person.name === String(name))
-    
-    if (existsName) {
-        return res.status(400).json({ error: 'name must be unique' })
-    }
-
-    const person = {
-        id: getNewId(),
+    const person = new Person({
         name: name,
         number: number
-    }
+    })
 
-
-    phonebook = phonebook.concat(person)
-    res.status(201).json(person)
+    person.save().then(savedPerson => {
+        res.status(201).json(savedPerson)
+    })
 
 })
 
