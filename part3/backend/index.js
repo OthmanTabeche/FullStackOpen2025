@@ -1,7 +1,16 @@
-import express, { request, response } from "express";
+import express, { json, request, response } from "express";
+import morgan, { token } from "morgan";
+
 const app = express()
 
+
 app.use(express.json())
+
+morgan.token('body', (_req) => {
+    return JSON.stringify(_req.body)
+})
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms: body'))
 
 
 let phonebook = [
@@ -70,7 +79,7 @@ app.post('/api/persons', (_req, res) => {
     }
 
     const existsName = phonebook.find(person => person.name === String(name))
-
+    
     if (existsName) {
         return res.status(400).json({ error: 'name must be unique' })
     }
