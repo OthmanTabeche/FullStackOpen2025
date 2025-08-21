@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import Person from "./models/person.js"
-import person from "./models/person.js";
+import middleware from "./middleware/middleware.js";
 
 const app = express()
 
@@ -15,11 +15,6 @@ morgan.token('body', (req) => {
 })
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms: body'))
-
-const getNewId = () => {
-    const maxId = phonebook.length > 0 ? Math.max(...phonebook.map (n => n.id)) : 0
-    return maxId + 1
-}
 
 app.get('/api/persons', (req, res) => {
     Person.find({}).then(persons => {
@@ -36,11 +31,10 @@ app.get('/api/persons/:id', (req, res) => {
 })
 
 
-app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    phonebook = phonebook.filter(person => person.id !== id)
-    
-    res.status(204).end()
+app.delete('/api/persons/:id', (req, res, next) => {
+    Person.findByIdAndDelete(req.params.id)
+    .then(() => res.status(201).end())
+    .catch(error => next(error))
 })
 
 app.post('/api/persons', (req, res) => {
@@ -60,6 +54,10 @@ app.post('/api/persons', (req, res) => {
     })
 
 })
+
+app.use(middleware.unknownEndpoint)
+
+app.use(middleware.errorHandler)
 
 const PORT = 3001
 app.listen(PORT, () => (

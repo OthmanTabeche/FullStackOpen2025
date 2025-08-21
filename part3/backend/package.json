@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "standard && node my-tests.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -19,6 +19,30 @@
     "morgan": "^1.10.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
-  }
+    "@eslint/js": "^9.33.0",
+    "@stylistic/eslint-plugin-js": "^4.4.1",
+    "eslint": "^9.33.0",
+    "globals": "^16.3.0",
+    "nodemon": "^3.1.10",
+    "standard": "^17.1.2"
+  },
+    "eslintConfig": {
+      "extends": [
+        "eslint:recommended",
+        "plugin:@stylistic/js/recommended"
+      ],
+      "env": {
+        "browser": true,
+        "node": true,
+        "es2021": true
+      },
+      "parserOptions": {
+        "ecmaVersion": 12,
+        "sourceType": "module"
+      },
+      "rules": {
+        "no-console": "off",
+        "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }]
+      }
+    }
 }

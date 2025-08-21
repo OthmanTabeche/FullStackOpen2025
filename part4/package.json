@@ -1,27 +1,48 @@
 {
-  "name": "part4",
+  "name": "backend",
   "version": "1.0.0",
   "description": "",
   "license": "MIT",
-  "author": "Othman Tabeche",
-  "type": "commonjs",
+  "author": "Othman",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=production node index.js",
-    "dev": "NODE_ENV=development nodemon index.js",
-    "test": "NODE_ENV=test node --test"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "standard && node my-tests.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^17.2.0",
+    "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    "mongodb": "^6.17.0",
-    "mongoose": "^8.16.4"
+    "mongodb": "^6.18.0",
+    "morgan": "^1.10.1"
   },
   "devDependencies": {
-    "@eslint/js": "^9.31.0",
-    "eslint": "^9.31.0",
+    "@eslint/js": "^9.33.0",
+    "@stylistic/eslint-plugin-js": "^4.4.1",
+    "eslint": "^9.33.0",
     "globals": "^16.3.0",
-    "nodemon": "^3.1.10"
-  }
+    "nodemon": "^3.1.10",
+    "standard": "^17.1.2"
+  },
+    "eslintConfig": {
+      "extends": [
+        "eslint:recommended",
+        "plugin:@stylistic/js/recommended"
+      ],
+      "env": {
+        "browser": true,
+        "node": true,
+        "es2021": true
+      },
+      "parserOptions": {
+        "ecmaVersion": 12,
+        "sourceType": "module"
+      },
+      "rules": {
+        "no-console": "off",
+        "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }]
+      }
+    }
 }
