@@ -24,3 +24,13 @@ test('the correct amount of blog post', async () => {
 
     assert.strictEqual(response.body.length, initialBlogsLength)
 })
+
+test('the unique identifier property of the blog posts is named id', async () => {
+    const response = await api.get('/api/blogs')
+    const blogs = response.body
+
+    blogs.forEach(blog => {
+        assert.ok(blog.id)
+        assert.strictEqual(blog._id, undefined)
+    });
+})
