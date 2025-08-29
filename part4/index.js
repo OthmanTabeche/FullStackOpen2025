@@ -1,65 +1,39 @@
-import express from "express";
-import cors from "cors";
-import morgan from "morgan";
-import Person from "./models/person.js"
-import middleware from "./middleware/middleware.js";
+import express from 'express'
+import mongoose from 'mongoose'
+import dotenv from 'dotenv'
+dotenv.config()
 
 const app = express()
 
+const blogSchema = mongoose.Schema({
+    title: String,
+    author: String,
+    url: String,
+    likes: Number,
+})
+
+const Blog = mongoose.model('Blog', blogSchema)
+
+const mongoUrl = process.env.MONGODB_URI
+mongoose.connect(mongoUrl)
+
 app.use(express.json())
-app.use(cors())
-app.use(express.static('dist'))
 
-morgan.token('body', (req) => {
-    return JSON.stringify(req.body)
-})
-
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms: body'))
-
-app.get('/api/persons', (req, res) => {
-    Person.find({}).then(persons => {
-        res.json(persons)
+app.get('/api/blogs', (request, response) => {
+    Blog.find({}).then((blogs) => {
+        response.json(blogs)
     })
 })
 
-app.get('/api/persons/:id', (req, res) => {
-    Person
-        .findById(req.params.id)
-        .then(person => {
-            res.json(person)
-        })
-})
+app.post('/api/blogs', (request, response) => {
+    const blog = new Blog(request.body)
 
-
-app.delete('/api/persons/:id', (req, res, next) => {
-    Person.findByIdAndDelete(req.params.id)
-    .then(() => res.status(201).end())
-    .catch(error => next(error))
-})
-
-app.post('/api/persons', (req, res) => {
-    const { name, number } = req.body
-
-    if (!name || !number) {
-        return res.status(400).json({ error: 'check the name or the number' })
-    }
-
-    const person = new Person({
-        name: name,
-        number: number
+    blog.save().then((result) => {
+        response.status(201).json(result)
     })
-
-    person.save().then(savedPerson => {
-        res.status(201).json(savedPerson)
-    })
-
 })
 
-app.use(middleware.unknownEndpoint)
-
-app.use(middleware.errorHandler)
-
-const PORT = 3001
-app.listen(PORT, () => (
+const PORT = 3003
+app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
-))  
+})
